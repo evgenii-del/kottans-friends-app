@@ -4,13 +4,79 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
-    <title>Title</title>
+    <title>Kottans friends app</title>
 </head>
 <body>
 
 <div class="wrapper">
-    asd
+    <div class="app">
+        <div class="app__sidebar">
+            <div class="filter">
+
+                <div class="filter__item">
+                    <h2 class="filter__title">Поиск</h2>
+                    <label for="searchFriend"></label>
+                    <input type="text" class="filter__search" id="searchFriend">
+                </div>
+
+                <div class="filter__item">
+                    <h2 class="filter__title">По имени</h2>
+                    <div class="filter__choices">
+                        <label class="filter__choice" for="fromLowerToHigh">
+                            От а до я
+                            <input type="radio" name="filter" id="fromLowerToHigh">
+                        </label>
+                        <label class="filter__choice" for="fromHighToLower">
+                            С я до а
+                            <input type="radio" name="filter" id="fromHighToLower">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter__item">
+                    <h2 class="filter__title">По полу</h2>
+                    <div class="filter__choices">
+                        <label class="filter__choice" for="allChose">
+                            Все
+                            <input type="radio" name="filter" id="allChose">
+                        </label>
+                        <label class="filter__choice" for="femaleChose">
+                            Женский пол
+                            <input type="radio" name="filter" id="femaleChose">
+                        </label>
+                        <label class="filter__choice" for="maleChose">
+                            Мужской пол
+                            <input type="radio" name="filter" id="maleChose">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter__item">
+                    <h2 class="filter__title">По возрасту</h2>
+                    <div class="filter__choices">
+                        <label class="filter__choice" for="fromOldToYoung">
+                            От старших к младшим
+                            <input type="radio" name="filter" id="fromOldToYoung">
+                        </label>
+                        <label class="filter__choice" for="fromYoungToOld">
+                            От младших к старшим
+                            <input type="radio" name="filter" id="fromYoungToOld">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter__item">
+                    <input type="submit" value="Сбросить" class="reset">
+                </div>
+
+            </div>
+        </div>
+        <div class="app__main js-main">
+
+        </div>
+    </div>
 </div>
 
+<script src="js/main.js"></script>
 </body>
 </html>
