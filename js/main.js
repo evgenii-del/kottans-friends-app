@@ -1,25 +1,41 @@
 let friendsArr = [];
 const main = document.querySelector(".js-main");
-const filter = document.querySelector(".js-filter");
 const gender = document.querySelector(".js-gender");
 const age = document.querySelector(".js-age");
 const name = document.querySelector(".js-name");
 const reset = document.querySelector(".js-reset");
 
 
+const createBlock = (friend) => {
+    const block = document.createElement("div");
+    block.classList.add("card");
+    block.innerHTML = `
+                <div class="card__img">
+                    <img src="${friend.picture.medium}" alt="avatar">
+                </div>
+                <div class="card__content">
+                    <div class="card__top">
+                        <p>Name: ${friend.name.first}</p>
+                        <p>Surname: ${friend.name.last}</p>
+                    </div>
+                    <div>
+                        <p>Number:</p>
+                        <p>${friend.phone}</p>
+                    </div>
+                    <div class="card__bottom">
+                        <p>Age: ${friend.dob.age}</p>
+                        <p>Gender: ${friend.gender}</p>
+                    </div>
+                </div>
+        `;
+    return block;
+}
+
 const renderItem = (friends) => {
     main.innerHTML = "";
     let fragment = document.createDocumentFragment();
     friends.forEach((friend) => {
-        const block = document.createElement('li');
-        block.innerHTML = `
-        <p>photo</p>
-        <p>${friend.name.first} ${friend.name.last}</p>
-        <p>${friend.dob.age}</p>
-        <p>${friend.gender}</p>
-        <p>${friend.phone}</p>
-        </br>
-        `;
+        const block = createBlock(friend);
         fragment.append(block);
     })
     main.append(fragment);
@@ -29,7 +45,7 @@ const getUsers = () => {
     const headers = {
         dataType: 'json'
     }
-    fetch('https://randomuser.me/api/?inc=gender,name,phone,dob&results=5', headers)
+    fetch('https://randomuser.me/api/?inc=gender,name,phone,dob,picture&results=12', headers)
         .then(response => response.json())
         .then(response => friendsArr = response.results)
         .finally(() => renderItem(friendsArr));
@@ -79,15 +95,17 @@ const sortByName = (type) => {
 document.addEventListener("DOMContentLoaded", () => {
     getUsers();
 
-    document.querySelector('.js-search').addEventListener('keyup', (event) =>
-        filterBySearch(event.target.value.toLowerCase())
+    document.querySelector('.js-search').addEventListener('keyup', ({target}) =>
+        filterBySearch(target.value.toLowerCase())
     );
 
-    gender.addEventListener('change', (event) => filterBySex(event.target.value));
+    gender.addEventListener('change', ({target}) => filterBySex(target.value));
 
-    age.addEventListener('change', (event) => sortByAge(event.target.value));
+    age.addEventListener('change', ({target}) => sortByAge(target.value));
 
-    name.addEventListener('change', (event) => sortByName(event.target.value));
+    name.addEventListener('change', ({target}) => sortByName(target.value));
 
     reset.addEventListener('click', () => renderItem(friendsArr));
 })
+
+
