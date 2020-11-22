@@ -4,6 +4,7 @@ const gender = document.querySelector(".js-gender");
 const age = document.querySelector(".js-age");
 const name = document.querySelector(".js-name");
 const reset = document.querySelector(".js-reset");
+let nameProp, ageProp, genderProp, searchProp;
 
 
 const createBlock = (friend) => {
@@ -15,8 +16,8 @@ const createBlock = (friend) => {
                 </div>
                 <div class="card__content">
                     <div class="card__top">
-                        <p>Name: ${friend.name.first}</p>
-                        <p>Surname: ${friend.name.last}</p>
+                        <p>${friend.name.first}</p>
+                        <p>${friend.name.last}</p>
                     </div>
                     <div>
                         <p>Number:</p>
@@ -51,61 +52,97 @@ const getUsers = () => {
         .finally(() => renderItem(friendsArr));
 }
 
-const filterBySearch = (value) => {
-    let newFriendsArr = friendsArr.filter(friend => {
-        const name = `${friend.name.first.toLowerCase()} ${friend.name.last.toLowerCase()}`;
-        return name.includes(value);
-    })
-    renderItem(newFriendsArr);
-}
-
-const filterBySex = (sex) => {
-    if (sex === 'male') {
-        let newFriendsArr = friendsArr.filter(friend => friend.gender === 'male');
-        renderItem(newFriendsArr);
-    } else if (sex === 'female') {
-        let newFriendsArr = friendsArr.filter(friend => friend.gender === 'female');
-        renderItem(newFriendsArr);
-    } else {
-        renderItem(friendsArr);
-    }
-}
-
-const sortByAge = (type) => {
-    let newFriendsArr = [...friendsArr].sort((prev, next) => prev.dob.age - next.dob.age);
-    if (type === 'asc') {
-        renderItem(newFriendsArr);
-    } else if (type === 'des') {
-        renderItem(newFriendsArr.reverse());
-    }
-}
-
-const sortByName = (type) => {
-    let newFriendsArr = [...friendsArr].sort((prev, next) => {
+const sortByName = (arr, type) => {
+    let newFriendsArr = [...arr].sort((prev, next) => {
         if (prev.name.first < next.name.first) return -1;
         if (prev.name.first < next.name.first) return 1;
     });
     if (type === 'abc') {
-        renderItem(newFriendsArr);
+        return newFriendsArr;
     } else if (type === 'cba') {
-        renderItem(newFriendsArr.reverse());
+        return newFriendsArr.reverse();
     }
+}
+
+const sortByAge = (arr, type) => {
+    let newFriendsArr = arr.sort((prev, next) => prev.dob.age - next.dob.age);
+    if (type === 'asc') {
+        return newFriendsArr;
+    } else if (type === 'des') {
+        return newFriendsArr.reverse();
+    }
+}
+
+const filterBySex = (arr, sex) => {
+    if (sex === 'male') {
+        return arr.filter(friend => friend.gender === 'male');
+    } else if (sex === 'female') {
+        return arr.filter(friend => friend.gender === 'female');
+    } else {
+        return arr;
+    }
+}
+
+const filterBySearch = (arr, value) => {
+    return arr.filter(friend => {
+        const name = `${friend.name.first.toLowerCase()} ${friend.name.last.toLowerCase()}`;
+        return name.includes(value);
+    })
+}
+
+const filter = () => {
+    let newFriendsArr = [...friendsArr];
+
+    if (genderProp) {
+        newFriendsArr = filterBySex(newFriendsArr, genderProp);
+    }
+    if (ageProp) {
+        newFriendsArr = sortByAge(newFriendsArr, ageProp);
+    }
+    if (nameProp) {
+        newFriendsArr = sortByName(newFriendsArr, nameProp);
+    }
+    if (searchProp) {
+        newFriendsArr = filterBySearch(newFriendsArr, searchProp);
+    }
+
+    renderItem(newFriendsArr);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     getUsers();
 
-    document.querySelector('.js-search').addEventListener('keyup', ({target}) =>
-        filterBySearch(target.value.toLowerCase())
-    );
+    document.querySelector('.js-search').addEventListener('keyup', ({target}) => {
+        searchProp = target.value.toLowerCase();
+        filter();
+    });
 
-    gender.addEventListener('change', ({target}) => filterBySex(target.value));
+    gender.addEventListener('change', ({target}) => {
+        genderProp = target.value;
+        filter();
+    });
 
-    age.addEventListener('change', ({target}) => sortByAge(target.value));
+    age.addEventListener('change', ({target}) => {
+        searchProp = null;
+        nameProp = null;
+        ageProp = target.value;
+        filter();
+    });
 
-    name.addEventListener('change', ({target}) => sortByName(target.value));
+    name.addEventListener('change', ({target}) => {
+        searchProp = null;
+        ageProp = null;
+        nameProp = target.value;
+        filter();
+    });
 
-    reset.addEventListener('click', () => renderItem(friendsArr));
+    reset.addEventListener('click', () => {
+        searchProp = null;
+        nameProp = null;
+        ageProp = null;
+        genderProp = null;
+        filter();
+    });
 })
 
 
