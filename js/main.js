@@ -32,7 +32,7 @@ const createBlock = (friend) => {
     return block;
 }
 
-const renderItem = (friends) => {
+const renderItems = (friends) => {
     main.innerHTML = "";
     let fragment = document.createDocumentFragment();
     friends.forEach((friend) => {
@@ -42,20 +42,18 @@ const renderItem = (friends) => {
     main.append(fragment);
 }
 
-const getUsers = () => {
+const fetchFriends = () => {
     const headers = {
         dataType: 'json'
     }
-    fetch('https://randomuser.me/api/?inc=gender,name,phone,dob,picture&results=12', headers)
+    return fetch('https://randomuser.me/api/?inc=gender,name,phone,dob,picture&results=12', headers)
         .then(response => response.json())
-        .then(response => friendsArr = response.results)
-        .finally(() => renderItem(friendsArr));
 }
 
 const sortByName = (arr, type) => {
     let newFriendsArr = [...arr].sort((prev, next) => {
         if (prev.name.first < next.name.first) return -1;
-        if (prev.name.first < next.name.first) return 1;
+        if (prev.name.first > next.name.first) return 1;
     });
     if (type === 'abc') {
         return newFriendsArr;
@@ -90,7 +88,7 @@ const filterBySearch = (arr, value) => {
     })
 }
 
-const filter = () => {
+const filterFriends = () => {
     let newFriendsArr = [...friendsArr];
 
     if (genderProp) {
@@ -106,34 +104,35 @@ const filter = () => {
         newFriendsArr = filterBySearch(newFriendsArr, searchProp);
     }
 
-    renderItem(newFriendsArr);
+    renderItems(newFriendsArr);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    getUsers();
+const runApp = (data) => {
+    renderItems(data);
+    friendsArr = data;
 
     document.querySelector('.js-search').addEventListener('keyup', ({target}) => {
         searchProp = target.value.toLowerCase();
-        filter();
+        filterFriends();
     });
 
     gender.addEventListener('change', ({target}) => {
         genderProp = target.value;
-        filter();
+        filterFriends();
     });
 
     age.addEventListener('change', ({target}) => {
         searchProp = null;
         nameProp = null;
         ageProp = target.value;
-        filter();
+        filterFriends();
     });
 
     name.addEventListener('change', ({target}) => {
         searchProp = null;
         ageProp = null;
         nameProp = target.value;
-        filter();
+        filterFriends();
     });
 
     reset.addEventListener('click', () => {
@@ -141,8 +140,10 @@ document.addEventListener("DOMContentLoaded", () => {
         nameProp = null;
         ageProp = null;
         genderProp = null;
-        filter();
+        filterFriends();
     });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchFriends().then((response) => runApp(response.results));
 })
-
-
